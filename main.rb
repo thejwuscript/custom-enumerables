@@ -3,8 +3,8 @@
 # custom enumerables
 module Enumerable
   def my_each
-    self.length.times do |i|
-      yield(self[i])
+    self.to_a.length.times do |i|
+      yield(self.to_a[i])
     end
   end
 
@@ -42,5 +42,37 @@ module Enumerable
       my_each { |item| return true if args[0] === item}
     end
     false
+  end
+
+  def my_none?(*args)
+    if block_given?
+      my_each { |item| return false if yield(item) == true}
+    elsif args.empty?
+      my_each { |item| return false if item}
+    else
+      my_each { |item| return false if args[0] === item}
+    end
+    true
+  end
+
+  def my_count(*args)
+    counter = 0
+    if block_given? && args.my_any?
+      puts 'warning: given block not used'
+      my_each { |item| counter += 1 if item == args[0] }
+    elsif block_given?
+      my_each { |item| counter += 1 if yield(item) == true }
+    elsif args.empty?
+      return length
+    else
+      my_each { |item| counter += 1 if item == args[0] }
+    end
+    counter
+  end
+
+  def my_map
+    array = []
+    my_each { |item| array << yield(item) }
+    array
   end
 end
