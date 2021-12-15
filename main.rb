@@ -22,12 +22,21 @@ module Enumerable
     array
   end
 
-  def my_all?(argument = true)
+  def my_all?(*args)
     if block_given?
-      # code
+      my_each do |element|
+        return false unless yield(element) == true
+      end
+      return true
     end
     my_each do |element| 
-      return false unless element
+      if args.empty?
+        return false unless element
+        next
+      else
+        return false unless args[0] === element
+        next
+      end
     end
     true
   end
