@@ -78,10 +78,32 @@ module Enumerable
   end
 
   def my_inject(*args)
-    accumulator = to_a[0]
-    self.to_a[1..-1].my_each do |item| 
-      accumulator = item.send args[0], accumulator
+    if args[0].is_a? Symbol
+      accumulator = to_a[0]
+      self.to_a[1..-1].my_each do |item| 
+        accumulator = item.send args[0], accumulator
+      end
+      return accumulator
     end
-    accumulator
+    if args[1].is_a? Symbol
+      accumulator = args[0]
+      self.to_a[0..-1].my_each do |item| 
+        accumulator = item.send args[1], accumulator
+      end
+      return accumulator
+    end
+    if block_given? && args.empty?
+      accumulator = to_a[0]
+      self.to_a[1..-1].my_each do |item|
+        accumulator = yield(accumulator, item)
+      end
+      return accumulator
+    elsif block_given?
+      accumulator = args[0]
+      self.to_a[0..-1].my_each do |item|
+        accumulator = yield(accumulator, item)
+      end
+      return accumulator
+    end
   end
 end
