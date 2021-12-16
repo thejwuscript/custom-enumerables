@@ -107,9 +107,13 @@ module Enumerable
     end
   end
 
-  def alt_map(&bloc)
+  def alt_map(*a_proc)
     array = []
-    my_each { |item| array << bloc.call(item) }
+    if a_proc.empty?
+      my_each { |item| array << yield(item) }
+    else
+      my_each { |item| array << a_proc[0].call(item) }
+    end
     array
   end
 end
