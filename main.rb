@@ -3,12 +3,16 @@
 # custom enumerables
 module Enumerable
   def my_each
+    return to_enum :my_each unless block_given?
+
     self.to_a.length.times do |i|
       yield(self.to_a[i])
     end
   end
 
   def my_each_with_index
+    return to_enum :my_each_with_index unless block_given?
+
     i = 0
     while i < self.length do
       yield(self[i], i)
@@ -17,6 +21,8 @@ module Enumerable
   end
 
   def my_select
+    return to_enum :my_select unless block_given?
+
     array = []
     my_each  { |num| array << num if yield(num) == true}
     array
@@ -44,7 +50,6 @@ module Enumerable
     false
   end
 
-  # With no block given and no argument, returns true if self has no truthy elements, false otherwise.
   def my_none?(*args)
     if block_given?
       my_each { |item| return false if yield(item) == true}
