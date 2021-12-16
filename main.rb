@@ -106,4 +106,14 @@ module Enumerable
       return accumulator
     end
   end
+
+  def alt_map(&bloc)
+    array = []
+    my_each { |item| array << bloc.call(item) }
+    array
+  end
+end
+
+def multiply_els(array)
+  array.my_inject(:*)
 end
